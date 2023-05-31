@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="lib/echarts.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="main" style="height: 600px; width: 600px"></div>
+  </body>
+</html>
+<script>
+  var data = [
+    { gender: 'female', height: 161.2, weight: 51.6 },
+    { gender: 'female', height: 167.5, weight: 59 },
+    { gender: 'female', height: 159.5, weight: 49.2 },
+    { gender: 'female', height: 157, weight: 63 },
+    { gender: 'female', height: 155.8, weight: 53.6 },
+    { gender: 'female', height: 170, weight: 59 },
+    { gender: 'female', height: 159.1, weight: 47.6 },
+    { gender: 'female', height: 166, weight: 69.8 },
+    { gender: 'female', height: 176.2, weight: 66.8 },
+    { gender: 'female', height: 160.2, weight: 75.2 },
+    { gender: 'female', height: 172.5, weight: 55.2 },
+    { gender: 'female', height: 170.9, weight: 54.2 },
+    { gender: 'female', height: 172.9, weight: 62.5 },
+    { gender: 'female', height: 153.4, weight: 42 },
+    { gender: 'female', height: 160, weight: 50 },
+    { gender: 'female', height: 147.2, weight: 49.8 }
+  ]
+
+  const newData = data.map((item) => {
+    return [item.height, item.weight]
+  })
+
+  const chartInstance = echarts.init(document.getElementById('main'))
+
+  const option = {
+    xAxis: {
+      type: 'value'
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        type: 'effectScatter',
+        rippleEffect: { scale: 10 },
+        showEffectOn: 'emphasis',
+        data: newData,
+        symbolSize: function (arg) {
+          const weight = arg[1]
+
+          if (weight > 60) {
+            return 50
+          }
+
+          return 30
+        },
+        itemStyle: {
+          color: function (arg) {
+            console.log('arg', arg)
+            const weight = arg.data[1]
+            if (weight > 60) {
+              return 'red'
+            }
+
+            return 'yellow'
+          }
+        }
+      }
+    ]
+  }
+
+  chartInstance.setOption(option)
+
+  window.addEventListener('resize', () => {
+    chartInstance.resize()
+  })
+</script>

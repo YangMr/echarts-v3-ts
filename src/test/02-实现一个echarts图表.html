@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="lib/echarts.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="main" style="width: 600px; height: 600px"></div>
+  </body>
+</html>
+<script>
+  const echartsInstance = echarts.init(document.getElementById('main'))
+
+  const option = {
+    title: {
+      text: '语文成绩图表 \n 2023',
+      link: 'http://www.baidu.com',
+      textStyle: {
+        // color: 'yellow'
+      },
+      textAlign: 'left',
+      padding: 20
+    },
+    xAxis: {
+      type: 'category',
+      data: ['小明', '小红', '小黄']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        name: '语文成绩',
+        type: 'bar',
+        data: [60, 80, 100]
+      }
+    ]
+  }
+
+  echartsInstance.setOption(option)
+
+  window.addEventListener('resize', () => {
+    echartsInstance.resize()
+  })
+</script>

@@ -1,12 +1,17 @@
 <template>
   <div class="container">
-    <div class="title">
+    <div class="title" :style="titleStyle">
       <span @click="selectStatus = !selectStatus">
-        {{ selectArrs[0]?.text }}
+        {{ '▎' + title }}
       </span>
-      <span>^</span>
-      <div class="select" v-if="selectStatus">
-        <div class="select-item" v-for="(item, index) in selectArrs" :key="index">
+      <span class="iconfont" :style="titleStyle">&#xe6eb;</span>
+      <div class="select" v-if="selectStatus" :style="marginStyle">
+        <div
+          @click="handleSelect(item.key)"
+          class="select-item"
+          v-for="(item, index) in selectArrs"
+          :key="index"
+        >
           {{ item.text }}
         </div>
       </div>
@@ -16,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, getCurrentInstance } from 'vue'
+import { onBeforeUnmount, onMounted, ref, getCurrentInstance, computed } from 'vue'
 import { getTrend } from '@/api/trend'
 const { proxy } = getCurrentInstance()
 
@@ -29,8 +34,42 @@ const resultAllData = ref<any>()
 // 创建一个变量,用来控制下拉选择的显示与隐藏
 const selectStatus = ref(false)
 
+// 创建一个变量,保存默认加载的状态的数据
+const dataType = ref('map')
+
 // 创建一个变量,保存下拉框的数据
-const selectArrs = ref([])
+// const selectArrs = ref([])
+
+// 创建一个变量,用来保存动态的字体大小
+const titleFontSize = ref(0)
+
+// 计算属性
+const selectArrs = computed(() => {
+  if (!resultAllData.value || !resultAllData.value.type) {
+    return []
+  } else {
+    return resultAllData.value.type.filter((item) => {
+      return item.key != dataType.value
+    })
+  }
+})
+
+const title = computed(() => {
+  if (!resultAllData.value) {
+    return ''
+  } else {
+    return resultAllData.value[dataType.value].title
+  }
+})
+
+const titleStyle = computed(() => {
+  return { fontSize: titleFontSize.value + 'px' }
+})
+
+const marginStyle = computed(() => {
+  return { marginLeft: titleFontSize.value + 'px' }
+})
+console.log('marginStyle', marginStyle)
 
 // 1. 初始化echarts实例对象
 const initChart = () => {
@@ -53,11 +92,6 @@ const initChart = () => {
       right: '4%',
       bottom: '1%',
       containLabel: true
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: {}
-      }
     },
     xAxis: {
       type: 'category',
@@ -95,13 +129,13 @@ const getData = async () => {
 const updateChart = () => {
   console.log('resultAllData.value', resultAllData.value)
   // 获取下拉框的数据
-  selectArrs.value = resultAllData.value.type
+  // selectArrs.value = resultAllData.value.type
 
   // 获取到x轴的数据
   const timeArrs = resultAllData.value.common.month
 
   // 获取y轴的数据
-  const valueArrs = resultAllData.value.map.data
+  const valueArrs = resultAllData.value[dataType.value].data
 
   // 获取legend的数据
   const legendArrs = valueArrs.map((item) => item.name)
@@ -129,7 +163,7 @@ const updateChart = () => {
       name: item.name,
       type: 'line',
       data: item.data,
-      stack: 'map',
+      stack: dataType.value,
       smooth: true,
       showSymbol: false,
       areaStyle: {
@@ -170,6 +204,20 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
+  titleFontSize.value = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+
+  const adapterOption = {
+    legend: {
+      itemWidth: titleFontSize.value,
+      itemHeight: titleFontSize.value,
+      itemGap: titleFontSize.value,
+      textStyle: {
+        fontSize: titleFontSize.value
+      }
+    }
+  }
+  echartsInstance.value.setOption(adapterOption)
+
   echartsInstance.value.resize()
 }
 
@@ -185,6 +233,13 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', screenAdapter)
 })
+
+// 7. 切换图表
+const handleSelect = (key) => {
+  dataType.value = key
+  updateChart()
+  selectStatus.value = false
+}
 </script>
 
 <style scoped>
