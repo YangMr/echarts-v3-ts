@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="lib/echarts.min.js"></script>
+  <script src="lib/jquery.min.js"></script>
+</head>
+<body>
+<div id="main" style="width : 600px; height : 600px;"></div>
+</body>
+</html>
+<script>
+  const chartInstance = echarts.init(document.getElementById("main"))
+
+
+  const option = {
+    series : [
+      {
+        type : 'gauge',
+        data : [
+          {
+            value : 80,
+            itemStyle : {
+              color : 'yellow'
+            }
+          },
+          {
+            value : 60,
+            itemStyle : {
+              color : 'green'
+            }
+          },
+          {
+            value : 66,
+            itemStyle : {
+              color : 'red'
+            }
+          }
+        ],
+        min : 50,
+        max : 80
+      }
+    ]
+  }
+
+  chartInstance.setOption(option)
+
+  window.addEventListener("resize", ()=>{
+    chartInstance.resize()
+  })
+</script>

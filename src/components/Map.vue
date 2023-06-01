@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @dblclick="revertMap">
     <div class="chart" id="chart"></div>
   </div>
 </template>
@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import axios from 'axios'
 import { onBeforeUnmount, onMounted, ref, getCurrentInstance } from 'vue'
+import { getProvinceMapInfo } from '@/utils/map_utils.js'
 import { getMap } from '@/api/map'
 const { proxy } = getCurrentInstance()
 
@@ -29,9 +30,20 @@ const initChart = async () => {
 
     // 配置并渲染地图数据
     const option = {
+      title: {
+        text: '▎商家分布',
+        left: 20,
+        top: 20
+      },
       geo: {
         type: 'map',
         map: 'chinaMap',
+        top: '5%',
+        bottom: '5%',
+        itemStyle: {
+          areaColor: '#2E72BF',
+          borderColor: '#333'
+        },
         roam: true,
         label: {
           show: true
@@ -42,6 +54,28 @@ const initChart = async () => {
   } catch (e) {
     console.log(e)
   }
+
+  // 给所有的地图模块添加点击事件
+  echartsInstance.value.on('click', async function (arg) {
+    const provinceInfo = getProvinceMapInfo(arg.name)
+    console.log('provinceInfo==>', provinceInfo)
+    try {
+      const result = await axios({ url: 'http://localhost:4001' + provinceInfo.path })
+
+      // 使用echarts注册地图数据
+      proxy.$echarts.registerMap(provinceInfo.key, result.data)
+
+      const dataOption = {
+        geo: {
+          map: provinceInfo.key
+        }
+      }
+
+      echartsInstance.value.setOption(dataOption)
+    } catch (e) {
+      console.log(e)
+    }
+  })
 }
 
 // 2. 获取后台返回的数据
@@ -84,6 +118,25 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
+  const titleFontSize = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+
+  const adapterOption = {
+    title: {
+      textStyle: {
+        fontSize: titleFontSize
+      }
+    },
+    legend: {
+      itemWidth: titleFontSize / 2,
+      itemHeight: titleFontSize / 2,
+      itemGap: titleFontSize / 2,
+      textStyle: {
+        fontSize: titleFontSize / 2
+      }
+    }
+  }
+
+  echartsInstance.value.setOption(adapterOption)
   echartsInstance.value.resize()
 }
 
@@ -99,6 +152,14 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', screenAdapter)
 })
+
+// 双击返回上一级地图
+const revertMap = () => {
+  console.log('123')
+  echartsInstance.value.setOption({
+    geo: { map: 'chinaMap' }
+  })
+}
 </script>
 
 <style scoped></style>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="lib/echarts.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="main" style="height: 600px; width: 600px"></div>
+  </body>
+</html>
+<script>
+  const echartsInstance = echarts.init(document.getElementById('main'))
+
+  // 创建x轴数据
+  var xDataArr = [
+    '1月',
+    '2月',
+    '3月',
+    '4月',
+    '5月',
+    '6月',
+    '7月',
+    '8月',
+    '9月',
+    '10月',
+    '11月',
+    '12月'
+  ]
+
+  // 创建y轴数据
+  var yDataArr = [3000, 2800, 900, 1000, 800, 700, 1400, 1300, 900, 1000, 800, 600]
+  var yDataArr1 = [3002, 2820, 200, 1020, 802, 700, 1400, 1300, 900, 1000, 800, 600]
+  var yDataArr2 = [3005, 3003, 3001, 3002, 3009, 3007, 3003, 3001, 3005, 3004, 3001, 3009]
+  const option = {
+    xAxis: {
+      type: 'category',
+      data: xDataArr,
+      boundaryGap: false
+    },
+    yAxis: {
+      type: 'value',
+      scale: true
+    },
+    series: [
+      //   {
+      //     type: 'line',
+      //     data: yDataArr,
+      //     smooth: true,
+      //     areaStyle: {
+      //       color: 'purple'
+      //     },
+      //     lineStyle: {
+      //       color: 'yellow',
+      //       type: 'dashed'
+      //     },
+      //     markPoint: {
+      //       data: [
+      //         {
+      //           type: 'max',
+      //           name: '最大值'
+      //         },
+      //         {
+      //           type: 'min',
+      //           name: '最小值'
+      //         }
+      //       ]
+      //     }
+      //   },
+      {
+        type: 'line',
+        data: yDataArr2,
+        smooth: true
+      }
+    ]
+  }
+
+  echartsInstance.setOption(option)
+
+  window.addEventListener('resize', () => {
+    echartsInstance.resize()
+  })
+</script>

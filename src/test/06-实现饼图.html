@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="lib/echarts.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="main" style="width: 600px; height: 600px"></div>
+  </body>
+</html>
+<script>
+  const echartsInstance = echarts.init(document.getElementById('main'))
+
+  var pieData = [
+    { value: 11231, name: '淘宝' }
+    // { value: 22673, name: '京东' },
+    // { value: 6123, name: '唯品会' },
+    // { value: 8989, name: '1号店' },
+    // { value: 6700, name: '聚美优品' }
+  ]
+
+  const option = {
+    series: [
+      {
+        type: 'pie',
+        data: pieData,
+        label: {
+          show: true,
+          formatter: (arg) => {
+            return arg.data.name + '平台' + arg.data.value + '元\n' + arg.percent + '%'
+          }
+        },
+        radius: ['50%', '60%']
+        // selectedMode: 'multiple', //
+        // selectedOffset: 30
+        // roseType: 'radius'
+      }
+    ]
+  }
+
+  echartsInstance.setOption(option)
+
+  window.addEventListener('resize', () => {
+    echartsInstance.resize()
+  })
+</script>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="lib/echarts.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+</head>
+<body>
+    <div id="main" style="width : 600px; height : 600px;"></div>
+</body>
+</html>
+<script>
+    var dataMax = [
+        { name: '易用性', max: 100 },
+        { name: '功能', max: 100 },
+        { name: '拍照', max: 100 },
+        { name: '跑分', max: 100 },
+        { name: '续航', max: 100 }
+    ]
+
+    const chartInstance = echarts.init(document.getElementById("main"))
+
+    var hwScore = [80, 90, 80, 82, 90]
+    var zxScore = [70, 82, 75, 70, 78]
+
+    const option = {
+
+        radar: {
+            indicator : dataMax,
+            shape: 'circle'
+        },
+        series : [
+            {
+                type : 'radar',
+                label : {
+                    show : false
+                },
+                areaStyle : {},
+                data : [
+                    {
+                        name : '华为手机',
+                        value : hwScore,
+                        lineStyle : {
+                            color : 'yellow'
+                        }
+                    },
+                    {
+                        name : '小米手机',
+                        value : zxScore
+                    }
+                ]
+            }
+        ]
+    }
+
+    chartInstance.setOption(option)
+
+    window.addEventListener("resize", ()=>{
+        chartInstance.resize()
+    })
+</script>
