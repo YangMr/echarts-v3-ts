@@ -15,6 +15,10 @@ const echartsInstance = ref(null)
 // 创建一个变量, 保存请求到的数据
 let resultAllData = ref<any>()
 
+const startValue = ref(0)
+const endValue = ref(9)
+const timerId = ref<any>()
+
 // 1. 初始化echarts实例对象
 const initChart = () => {
   echartsInstance.value = proxy.$echarts.init(document.getElementById('chart'), 'dark')
@@ -43,12 +47,25 @@ const initChart = () => {
     },
     series: [
       {
-        type: 'bar'
+        type: 'bar',
+        label: {
+          show: true,
+          position: 'top',
+          rotate: 45
+        }
       }
     ]
   }
 
   echartsInstance.value.setOption(option)
+
+  echartsInstance.value.on('mouseover', () => {
+    clearInterval(timerId.value)
+  })
+
+  echartsInstance.value.on('mouseout', () => {
+    startInterval()
+  })
 }
 
 // 2. 获取后台返回的数据
@@ -66,6 +83,7 @@ const getData = async () => {
   }
 
   updateChart()
+  startInterval()
 }
 
 // 3. 更新图表的配置项以及渲染
@@ -84,6 +102,11 @@ const updateChart = () => {
   const dataOption = {
     xAxis: {
       data: provinceArr
+    },
+    dataZoom: {
+      show: false,
+      startValue: startValue.value,
+      endValue: endValue.value
     },
     series: [
       {
@@ -114,7 +137,23 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
-  const adapterOption = {}
+  const titleFontSize = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+
+  const adapterOption = {
+    title: {
+      textStyle: {
+        fontSize: titleFontSize
+      }
+    },
+    series: [
+      {
+        barWidth: titleFontSize,
+        itemStyle: {
+          barBorderRadius: [0.5 * titleFontSize, 0.5 * titleFontSize, 0, 0]
+        }
+      }
+    ]
+  }
   echartsInstance.value.setOption(adapterOption)
   echartsInstance.value.resize()
 }
@@ -130,7 +169,25 @@ onMounted(() => {
 // 6. 当组件销毁之前(移除监听事件)
 onBeforeUnmount(() => {
   window.removeEventListener('resize', screenAdapter)
+  clearInterval(timerId.value)
 })
+
+// 7. 创建定时器,实现柱状图切换
+const startInterval = () => {
+  if (timerId.value) {
+    clearInterval(timerId.value)
+  }
+
+  timerId.value = setInterval(() => {
+    startValue.value++
+    endValue.value++
+    if (endValue.value > resultAllData.value.length - 1) {
+      startValue.value = 0
+      endValue.value = 9
+    }
+    updateChart()
+  }, 1000)
+}
 </script>
 
 <style scoped></style>

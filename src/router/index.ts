@@ -3,6 +3,8 @@ import SellerPage from '@/views/SellerPage.vue'
 import TrendPage from '@/views/TrendPage.vue'
 import MapPage from '@/views/MapPage.vue'
 import RankPage from '@/views/RankPage.vue'
+import HotPage from '@/views/HotPage.vue'
+import StockPage from '@/views/StockPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +28,16 @@ const router = createRouter({
       path: '/rankpage',
       name: 'rankpage',
       component: RankPage
+    },
+    {
+      path: '/hotpage',
+      name: 'hotpage',
+      component: HotPage
+    },
+    {
+      path: '/stockpage',
+      name: 'stockpage',
+      component: StockPage
     }
   ]
 })
