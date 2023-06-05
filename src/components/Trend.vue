@@ -16,17 +16,20 @@
         </div>
       </div>
     </div>
-    <div class="chart" id="chart"></div>
+    <div class="chart" id="trend"></div>
+    <div class="resize" v-if="false">
+      <span class="iconfont">&#xe825;</span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, getCurrentInstance, computed } from 'vue'
+import { onBeforeUnmount, onMounted, ref, getCurrentInstance, computed, shallowRef } from 'vue'
 import { getTrend } from '@/api/trend'
 const { proxy } = getCurrentInstance()
 
 // 创建一个变量,用来保存echarts实例对象
-const echartsInstance = ref(null)
+const echartsInstance = shallowRef(null)
 
 // 创建一个变量, 用来保存获取到的图表数据
 const resultAllData = ref<any>()
@@ -73,7 +76,7 @@ console.log('marginStyle', marginStyle)
 
 // 1. 初始化echarts实例对象
 const initChart = () => {
-  echartsInstance.value = proxy.$echarts.init(document.getElementById('chart'), 'dark')
+  echartsInstance.value = proxy.$echarts.init(document.getElementById('trend'), 'chalk')
 
   const option = {
     title: {
@@ -204,7 +207,7 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
-  titleFontSize.value = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+  titleFontSize.value = (document.getElementById('trend')?.offsetWidth / 100) * 3.6
 
   const adapterOption = {
     legend: {
@@ -243,6 +246,9 @@ const handleSelect = (key) => {
 </script>
 
 <style scoped>
+.container {
+  position: relative !important;
+}
 .title {
   position: absolute;
   left: 20px;

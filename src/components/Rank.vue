@@ -1,16 +1,16 @@
 <template>
   <div class="container">
-    <div class="chart" id="chart"></div>
+    <div class="chart" id="rank"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, getCurrentInstance, onMounted, onBeforeUnmount } from 'vue'
+import { ref, getCurrentInstance, onMounted, onBeforeUnmount, shallowRef } from 'vue'
 import { getRank } from '@/api/rank'
 const { proxy } = getCurrentInstance()
 
 // 创建一个变量,保存echarts实例化的对象
-const echartsInstance = ref(null)
+const echartsInstance = shallowRef(null)
 
 // 创建一个变量, 保存请求到的数据
 let resultAllData = ref<any>()
@@ -21,7 +21,7 @@ const timerId = ref<any>()
 
 // 1. 初始化echarts实例对象
 const initChart = () => {
-  echartsInstance.value = proxy.$echarts.init(document.getElementById('chart'), 'dark')
+  echartsInstance.value = proxy.$echarts.init(document.getElementById('rank'), 'chalk')
 
   const option = {
     title: {
@@ -137,7 +137,7 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
-  const titleFontSize = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+  const titleFontSize = (document.getElementById('rank')?.offsetWidth / 100) * 3.6
 
   const adapterOption = {
     title: {

@@ -1,25 +1,25 @@
 <template>
   <div class="container" @dblclick="revertMap">
-    <div class="chart" id="chart"></div>
+    <div class="chart" id="map"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import axios from 'axios'
-import { onBeforeUnmount, onMounted, ref, getCurrentInstance } from 'vue'
+import { onBeforeUnmount, onMounted, ref, getCurrentInstance, shallowRef } from 'vue'
 import { getProvinceMapInfo } from '@/utils/map_utils.js'
 import { getMap } from '@/api/map'
 const { proxy } = getCurrentInstance()
 
 // 创建一个变量,保存echarts实例化的对象
-const echartsInstance = ref(null)
+const echartsInstance = shallowRef(null)
 
 // 创建一个变量, 保存请求到的商家分布数据
 let resultData = ref<any>()
 
 // 1. 初始化echarts实例对象
 const initChart = async () => {
-  echartsInstance.value = proxy.$echarts.init(document.getElementById('chart'), 'dark')
+  echartsInstance.value = proxy.$echarts.init(document.getElementById('map'), 'chalk')
 
   try {
     // 请求地图的数据
@@ -118,7 +118,7 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
-  const titleFontSize = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+  const titleFontSize = (document.getElementById('map')?.offsetWidth / 100) * 3.6
 
   const adapterOption = {
     title: {

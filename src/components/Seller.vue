@@ -1,17 +1,18 @@
 <template>
   <div class="container">
-    <div class="chart" id="chart"></div>
+    <div class="chart" id="seller"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, getCurrentInstance, onMounted, onBeforeUnmount } from 'vue'
+import { ref, getCurrentInstance, onMounted, onBeforeUnmount, shallowRef } from 'vue'
 import { getSeller } from '@/api/seller'
+// import chalkJson from '@/theme/chalk.json'
 
 // 结构出proxy, 通过proxy可以获取全局定义的属性与方法
 const { proxy } = getCurrentInstance()
 // 创建一个变量,用来保存echarts的实例对象
-const echartsInstance = ref(null)
+const echartsInstance = shallowRef(null)
 // 创建一个变量,保存获取到的商品销售数据
 const resultAllData = ref<any>()
 // 页码
@@ -25,12 +26,6 @@ const showData = ref([])
 // 创建一个变量,用来保存定时器
 let timerId = ref<any>()
 
-// 组件销毁触发的钩子函数
-onBeforeUnmount(() => {
-  clearInterval(timerId.value)
-  window.removeEventListener('resize', screenAdapter)
-})
-
 // dom加载完毕之后在触发
 onMounted(() => {
   initCharts()
@@ -41,7 +36,9 @@ onMounted(() => {
 
 // 1. 初始化echarts实例对象
 const initCharts = () => {
-  echartsInstance.value = proxy.$echarts.init(document.getElementById('chart'), 'dark')
+  // echartsInstance.value = proxy.$echarts.init(document.getElementById('seller'), 'dark')
+  // proxy.$echarts.registerTheme('chalk', chalkJson)
+  echartsInstance.value = proxy.$echarts.init(document.getElementById('seller'), 'chalk')
 
   const option = {
     title: {
@@ -191,7 +188,7 @@ const startInterval = () => {
 
 // 当浏览器窗口发生变化会触发的方法的
 const screenAdapter = () => {
-  const titleFontSize = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+  const titleFontSize = (document.getElementById('seller')?.offsetWidth / 100) * 3.6
   const dataOptions = {
     title: {
       textStyle: {
@@ -210,6 +207,12 @@ const screenAdapter = () => {
   echartsInstance.value.setOption(dataOptions)
   echartsInstance.value.resize()
 }
+
+// 组件销毁触发的钩子函数
+onBeforeUnmount(() => {
+  clearInterval(timerId.value)
+  window.removeEventListener('resize', screenAdapter)
+})
 </script>
 
 <style scoped></style>

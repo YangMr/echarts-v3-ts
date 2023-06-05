@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div id="chart" class="chart"></div>
+    <div id="hot" class="chart"></div>
     <span :style="customStyle" class="iconfont arr_left" @click="handleToLeft">&#xe6ef;</span>
     <span :style="customStyle" class="iconfont arr_right" @click="handleToRight">&#xe6ed;</span>
     <span :style="customStyle" class="category-name">{{ catName }}</span>
@@ -8,14 +8,14 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, getCurrentInstance, ref, computed } from 'vue'
+import { onBeforeUnmount, onMounted, getCurrentInstance, ref, computed, shallowRef } from 'vue'
 import { getHot } from '@/api/hot'
 
 // 获取proxy
 const { proxy } = getCurrentInstance()
 
 // 创建一个变量,保存echarts实例化的对象
-const echartsInstance = ref(null)
+const echartsInstance = shallowRef(null)
 
 // 创建一个变量, 保存请求到的数据
 const resultAllData = ref<any>()
@@ -28,7 +28,7 @@ const titleFontSize = ref(0)
 
 // 1. 初始化echarts实例对象
 const initChart = () => {
-  echartsInstance.value = proxy.$echarts.init(document.getElementById('chart'), 'dark')
+  echartsInstance.value = proxy.$echarts.init(document.getElementById('hot'), 'chalk')
 
   const option = {
     title: {
@@ -113,7 +113,7 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
-  titleFontSize.value = (document.getElementById('chart')?.offsetWidth / 100) * 3.6
+  titleFontSize.value = (document.getElementById('hot')?.offsetWidth / 100) * 3.6
 
   const adapterOption = {
     title: {
@@ -185,6 +185,9 @@ const catName = computed(() => {
 </script>
 
 <style scoped>
+.container {
+  position: relative;
+}
 .arr_left {
   position: absolute;
   left: 10%;
