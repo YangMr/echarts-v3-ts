@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, getCurrentInstance, onMounted, onBeforeUnmount, shallowRef } from 'vue'
+import { ref, getCurrentInstance, onMounted, onBeforeUnmount, shallowRef, defineExpose } from 'vue'
 import { getSeller } from '@/api/seller'
 // import chalkJson from '@/theme/chalk.json'
 
@@ -212,6 +212,10 @@ const screenAdapter = () => {
 onBeforeUnmount(() => {
   clearInterval(timerId.value)
   window.removeEventListener('resize', screenAdapter)
+})
+
+defineExpose({
+  screenAdapter
 })
 </script>
 

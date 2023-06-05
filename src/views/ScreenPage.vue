@@ -1,5 +1,8 @@
 <template>
   <div class="screen-container">
+    {{ name }} -- {{ age }}
+    <button @click="changeName">change</button>
+    <button @click="resetName">reset</button>
     <div class="screen-header">
       <div class="header-bg">
         <img
@@ -21,36 +24,61 @@
     </div>
     <div class="screen-body">
       <div class="screen-left">
-        <div class="left-top">
+        <div class="left-top" :class="[fullScreenStatus.trend ? 'fullscreen' : '']">
           <!--地区销量趋势图表-->
-          <Trend></Trend>
+          <Trend ref="trendRef"></Trend>
 
           <!--  全屏箭头  -->
-          <div class="resize">
-            <span class="iconfont">&#xe826;</span>
+          <div class="resize" @click="handleToggleScreen('trend')">
+            <span class="iconfont">{{ fullScreenStatus.trend ? '&#xe825;' : '&#xe826;' }}</span>
           </div>
         </div>
-        <div class="left-bottom">
+        <div class="left-bottom" :class="[fullScreenStatus.seller ? 'fullscreen' : '']">
           <!--商家销售统计图表-->
-          <Seller></Seller>
+          <Seller ref="sellerRef"></Seller>
+
+          <!--  全屏箭头  -->
+          <div class="resize" @click="handleToggleScreen('seller')">
+            <span class="iconfont">{{ fullScreenStatus.trend ? '&#xe825;' : '&#xe826;' }}</span>
+          </div>
         </div>
       </div>
       <div class="screen-middle">
-        <div class="middle-top">
-          <IMap></IMap>
+        <div class="middle-top" :class="[fullScreenStatus.map ? 'fullscreen' : '']">
+          <IMap ref="mapRef"></IMap>
+
+          <!--  全屏箭头  -->
+          <div class="resize" @click="handleToggleScreen('map')">
+            <span class="iconfont">{{ fullScreenStatus.trend ? '&#xe825;' : '&#xe826;' }}</span>
+          </div>
         </div>
-        <div class="middle-bottom">
-          <Rank></Rank>
+        <div class="middle-bottom" :class="[fullScreenStatus.rank ? 'fullscreen' : '']">
+          <Rank ref="rankRef"></Rank>
+
+          <!--  全屏箭头  -->
+          <div class="resize" @click="handleToggleScreen('rank')">
+            <span class="iconfont">{{ fullScreenStatus.trend ? '&#xe825;' : '&#xe826;' }}</span>
+          </div>
         </div>
       </div>
       <div class="screen-right">
-        <div class="right-top">
+        <div class="right-top" :class="[fullScreenStatus.hot ? 'fullscreen' : '']">
           <!--热销商品占比-->
-          <Hot></Hot>
+          <Hot ref="hotRef"></Hot>
+
+          <!--  全屏箭头  -->
+          <div class="resize" @click="handleToggleScreen('hot')">
+            <span class="iconfont">{{ fullScreenStatus.trend ? '&#xe825;' : '&#xe826;' }}</span>
+          </div>
         </div>
-        <div class="right-bottom">
+        <div class="right-bottom" :class="[fullScreenStatus.stock ? 'fullscreen' : '']">
           <!-- 库存和销量分析-->
-          <Stock></Stock>
+          <Stock ref="stockRef"></Stock>
+
+          <!--  全屏箭头  -->
+          <div class="resize" @click="handleToggleScreen('stock')">
+            <span class="iconfont">{{ fullScreenStatus.trend ? '&#xe825;' : '&#xe826;' }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -64,9 +92,66 @@ import IMap from '@/components/Map.vue'
 import Rank from '@/components/Rank.vue'
 import Hot from '@/components/Hot.vue'
 import Stock from '@/components/stock.vue'
+import { reactive, ref, nextTick, getCurrentInstance } from 'vue'
+
+import { useUsersStore } from '@/stores/users'
+import { storeToRefs } from 'pinia'
+const store = useUsersStore()
+const { name, age } = storeToRefs(useUsersStore())
+
+// const name = ref<string>(store.name)
+// const age = ref<number>(store.age)
+
+console.log('aaa=>', store.getName)
+
+const changeName = () => {
+  store.saveName('hahah')
+  //   store.$state ={}
+  // store.age = 200
+  // store.name = 'rose'
+
+  console.log(' store.age', store.age)
+}
+
+const resetName = () => {
+  store.$reset()
+}
+
+// console.log('store name => ', store.name)
+// console.log('store age => ', store.age)
+// const name = ref<string>(store.name)
+// const age = ref<number>(store.age)
+
+const { proxy }: any = getCurrentInstance()
+
+const fullScreenStatus = reactive({
+  trend: false,
+  seller: false,
+  map: false,
+  rank: false,
+  hot: false,
+  stock: false
+})
+
+const handleToggleScreen = (arg: string) => {
+  fullScreenStatus[arg] = !fullScreenStatus[arg]
+  nextTick(() => {
+    proxy.$refs[arg + 'Ref'].screenAdapter()
+  })
+}
 </script>
 
 <style scoped>
+.fullscreen {
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1000 !important;
+  top: 0 !important;
+  left: 0 !important;
+  margin: 0 !important;
+}
+
 .screen-container {
   width: 100%;
   height: 100%;

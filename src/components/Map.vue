@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import axios from 'axios'
-import { onBeforeUnmount, onMounted, ref, getCurrentInstance, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, getCurrentInstance, shallowRef, defineExpose } from 'vue'
 import { getProvinceMapInfo } from '@/utils/map_utils.js'
 import { getMap } from '@/api/map'
 const { proxy } = getCurrentInstance()
@@ -23,7 +23,7 @@ const initChart = async () => {
 
   try {
     // 请求地图的数据
-    const result = await axios.get('http://localhost:4001/map/china.json')
+    const result = await axios.get('/map/china.json')
 
     // 使用echarts注册地图数据
     proxy.$echarts.registerMap('chinaMap', result.data)
@@ -60,7 +60,7 @@ const initChart = async () => {
     const provinceInfo = getProvinceMapInfo(arg.name)
     console.log('provinceInfo==>', provinceInfo)
     try {
-      const result = await axios({ url: 'http://localhost:4001' + provinceInfo.path })
+      const result = await axios({ url: provinceInfo.path })
 
       // 使用echarts注册地图数据
       proxy.$echarts.registerMap(provinceInfo.key, result.data)
@@ -160,6 +160,10 @@ const revertMap = () => {
     geo: { map: 'chinaMap' }
   })
 }
+
+defineExpose({
+  screenAdapter
+})
 </script>
 
 <style scoped></style>

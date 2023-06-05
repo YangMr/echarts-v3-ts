@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 // import SellerPage from '@/views/SellerPage.vue'
 import TrendPage from '@/views/TrendPage.vue'
 // import MapPage from '@/views/MapPage.vue'
@@ -8,7 +8,7 @@ import TrendPage from '@/views/TrendPage.vue'
 import ScreenPage from '@/views/ScreenPage.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',

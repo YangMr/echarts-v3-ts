@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, getCurrentInstance, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, getCurrentInstance, shallowRef, defineExpose } from 'vue'
 import { getStock } from '@/api/stock'
 
 // 获取proxy
@@ -233,6 +233,10 @@ const startInterval = () => {
     updateChart()
   }, 2000)
 }
+
+defineExpose({
+  screenAdapter
+})
 </script>
 
 <style scoped></style>

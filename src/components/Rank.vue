@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, getCurrentInstance, onMounted, onBeforeUnmount, shallowRef } from 'vue'
+import { ref, getCurrentInstance, onMounted, onBeforeUnmount, shallowRef, defineExpose } from 'vue'
 import { getRank } from '@/api/rank'
 const { proxy } = getCurrentInstance()
 
@@ -114,7 +114,6 @@ const updateChart = () => {
         itemStyle: {
           color: (arg) => {
             let targetColor = colorArr[0]
-            console.log('arg=>', arg)
             if (arg.value >= 300) {
               targetColor = colorArr[0]
             } else if (arg.value >= 200) {
@@ -188,6 +187,10 @@ const startInterval = () => {
     updateChart()
   }, 1000)
 }
+
+defineExpose({
+  screenAdapter
+})
 </script>
 
 <style scoped></style>

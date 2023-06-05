@@ -8,7 +8,15 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, getCurrentInstance, ref, computed, shallowRef } from 'vue'
+import {
+  onBeforeUnmount,
+  onMounted,
+  getCurrentInstance,
+  ref,
+  computed,
+  shallowRef,
+  defineExpose
+} from 'vue'
 import { getHot } from '@/api/hot'
 
 // 获取proxy
@@ -87,10 +95,10 @@ const updateChart = () => {
     },
     tooltip: {
       trigger: 'item',
-      formatter: (params) => {
+      formatter: (params: any) => {
         console.log('params', params)
-        const arr = []
-        params.data.children.map((item) => {
+        const arr: any[] = []
+        params.data.children.map((item: any) => {
           let childStr = `${item.name}&nbsp;&nbsp;&nbsp; ${(
             (item.value / params.value) *
             100
@@ -181,6 +189,10 @@ const catName = computed(() => {
   } else {
     return resultAllData.value[currentIndex.value].name
   }
+})
+
+defineExpose({
+  screenAdapter
 })
 </script>
 

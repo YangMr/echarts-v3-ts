@@ -17,19 +17,24 @@
       </div>
     </div>
     <div class="chart" id="trend"></div>
-    <div class="resize" v-if="false">
-      <span class="iconfont">&#xe825;</span>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, getCurrentInstance, computed, shallowRef } from 'vue'
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  getCurrentInstance,
+  computed,
+  shallowRef,
+  defineExpose
+} from 'vue'
 import { getTrend } from '@/api/trend'
-const { proxy } = getCurrentInstance()
+const { proxy } = getCurrentInstance() as any
 
 // 创建一个变量,用来保存echarts实例对象
-const echartsInstance = shallowRef(null)
+const echartsInstance = shallowRef<any>()
 
 // 创建一个变量, 用来保存获取到的图表数据
 const resultAllData = ref<any>()
@@ -51,7 +56,7 @@ const selectArrs = computed(() => {
   if (!resultAllData.value || !resultAllData.value.type) {
     return []
   } else {
-    return resultAllData.value.type.filter((item) => {
+    return resultAllData.value.type.filter((item: any) => {
       return item.key != dataType.value
     })
   }
@@ -207,6 +212,7 @@ const updateChart = () => {
 
 // 4. 图表进行自适应
 const screenAdapter = () => {
+  // alert('!23')
   titleFontSize.value = (document.getElementById('trend')?.offsetWidth / 100) * 3.6
 
   const adapterOption = {
@@ -223,6 +229,10 @@ const screenAdapter = () => {
 
   echartsInstance.value.resize()
 }
+
+defineExpose({
+  screenAdapter
+})
 
 // 5. 当dom加载完毕之后(初始化echarts实例对象, 获取后台返回的数据, 图表进行自适应)
 onMounted(() => {
